@@ -1,0 +1,5 @@
+1. listing all materials
+/sap/opu/odata/sap/ZPL_MATERIAL_SRV/MatBatchSet
+
+2. Expand sale & whouse when selection of line item
+/sap/opu/odata/sap/ZPL_MATERIAL_SRV/MatBatchSet(MaterialId='MAT1',Batch='BAT1')?$expand=Sales,Whouse&$format=json
