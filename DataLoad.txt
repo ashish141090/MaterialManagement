@@ -1,0 +1,64 @@
+DO 1000 TIMES.
+
+  DATA(ls_material) = VALUE zplt_material( material_id   = |MAT{ sy-index }|
+                                           material_desc = |Material { sy-index }|
+                                           created_on    = sy-datum
+                                           created_by    = sy-uname
+                                           active_flag   = abap_true ).
+
+  MODIFY zplt_material FROM ls_material.
+
+  DATA(ls_plant) = VALUE zplt_plant( plant_id          = |PL{ sy-index MOD 5 }|
+                                     plant_description = |Plant { sy-index MOD 5 }|
+                                     state             = |ST{ sy-index MOD 5 }|
+                                     city              = |CITY{ sy-index MOD 5 }|
+                                     country           = |CONT{ sy-index MOD 5 }|
+                                     phone_number      = |112233{ sy-index MOD 5 }|
+                                     created_on        = sy-datum
+                                     created_by        = sy-uname
+                                     active_flag       = abap_true ) .
+
+  MODIFY zplt_plant FROM ls_plant.
+
+  DATA(ls_mat_batch) = VALUE zplt_mat_batch( material_id = |MAT{ sy-index }|
+                                             batch       = |BAT{ sy-index }|
+                                             produced_on = sy-datum
+                                             plant       = |PL{ sy-index MOD 5 }| ).
+
+  MODIFY zplt_mat_batch FROM ls_mat_batch.
+
+  DATA(ls_warehouse) = VALUE zplt_warehouse( warehouse_id          = |WH{ sy-index MOD 4 }|
+                                             warehouse_description = |Warehouse { sy-index MOD 4 }|
+                                             state                 = |ST{ sy-index MOD 4 }|
+                                             city                  = |CITY{ sy-index MOD 4 }|
+                                             country               = |CONT{ sy-index MOD 4 }|
+                                             phone_number          = |112233{ sy-index MOD 4 }|
+                                             created_on            = sy-datum
+                                             created_by            = sy-uname
+                                             active_flag           = abap_true ) .
+
+  MODIFY zplt_warehouse FROM ls_warehouse.
+
+  DATA(ls_mat_whouse) = VALUE zplt_mat_whouse( material_id   = |MAT{ sy-index }|
+                                               batch         = |BAT{ sy-index }|
+                                               warehouse_id  = |WH{ sy-index MOD 4 }|
+                                               movement_date = sy-datum
+                                               status        = COND #( WHEN sy-index > 10 THEN |A|
+                                                                       ELSE |B| ) ).
+
+  MODIFY zplt_mat_whouse FROM ls_mat_whouse.
+
+  IF sy-index < 10.
+    DATA(ls_mat_sales) = VALUE zplt_mat_sales( material_id   = |MAT{ sy-index }|
+                                               batch         = |BAT{ sy-index }|
+                                               warehouse_id  = |WH{ sy-index MOD 4 }|
+                                               customer_name = |CUST{ sy-index }|
+                                               phone_number  = |9980{ sy-index }|
+                                               sold_on       = sy-datum ).
+
+    MODIFY zplt_mat_sales FROM ls_mat_sales.
+  ENDIF.
+
+ENDDO.
+
+COMMIT WORK.
