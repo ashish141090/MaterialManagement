@@ -1,0 +1,128 @@
+@EndUserText.label : 'Material Batch Table'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_mat_batch {
+  key client      : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : true
+  key material_id : matnr not null
+    with foreign key zplt_material
+      where material_id = zplt_mat_batch.material_id;
+  key batch       : charg_d not null;
+  produced_on     : datum;
+  @AbapCatalog.foreignKey.screenCheck : true
+  plant           : werks_d
+    with foreign key zplt_plant
+      where plant_id = zplt_mat_batch.plant;
+
+}
+
+
+
+@EndUserText.label : 'Material Sales Data'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_mat_sales {
+  key client       : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key material_id  : matnr not null
+    with foreign key zplt_material
+      where material_id = zplt_mat_sales.material_id;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key batch        : charg_d not null
+    with foreign key zplt_mat_batch
+      where batch = zplt_mat_sales.batch;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key warehouse_id : char10 not null
+    with foreign key zplt_warehouse
+      where warehouse_id = zplt_mat_sales.warehouse_id;
+  customer_name    : char40;
+  phone_number     : char20;
+  sold_on          : datum;
+
+}
+
+
+@EndUserText.label : 'Material Warehouse Data'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_mat_whouse {
+  key client       : abap.clnt not null;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key material_id  : matnr not null
+    with foreign key zplt_material
+      where material_id = zplt_mat_whouse.material_id;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key batch        : charg_d not null
+    with foreign key zplt_mat_batch
+      where batch = zplt_mat_whouse.batch;
+  @AbapCatalog.foreignKey.screenCheck : false
+  key warehouse_id : char10 not null
+    with foreign key zplt_warehouse
+      where warehouse_id = zplt_mat_whouse.warehouse_id;
+  movement_date    : datum;
+  status           : zplt_wstatus;
+
+}
+
+
+@EndUserText.label : 'Material Table'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_material {
+  key client      : abap.clnt not null;
+  key material_id : matnr not null;
+  material_desc   : maktx;
+  created_on      : datum;
+  created_by      : usnam;
+  active_flag     : flag;
+
+}
+
+
+
+@EndUserText.label : 'Plant Table'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_plant {
+  key client        : abap.clnt not null;
+  key plant_id      : werks_d not null;
+  plant_description : char40;
+  state             : char24;
+  city              : char24;
+  country           : char24;
+  phone_number      : char20;
+  created_on        : datum;
+  created_by        : usnam;
+  active_flag       : flag;
+
+}
+
+
+@EndUserText.label : 'Warehouse Table'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER_NUMERIC
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zplt_warehouse {
+  key client            : abap.clnt not null;
+  key warehouse_id      : char10 not null;
+  warehouse_description : char40;
+  state                 : char24;
+  city                  : char24;
+  country               : char24;
+  phone_number          : char20;
+  created_on            : datum;
+  created_by            : usnam;
+  active_flag           : flag;
+
+}
