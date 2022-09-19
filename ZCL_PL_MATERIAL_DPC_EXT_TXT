@@ -1,0 +1,224 @@
+class ZCL_PL_MATERIAL_DPC_EXT definition
+  public
+  inheriting from ZCL_PL_MATERIAL_DPC
+  create public .
+
+public section.
+
+  methods /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET
+    redefinition .
+  methods /IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY
+    redefinition .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCL_PL_MATERIAL_DPC_EXT IMPLEMENTATION.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_PL_MATERIAL_DPC_EXT->/IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITY
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ENTITY_NAME                 TYPE        STRING(optional)
+* | [--->] IV_ENTITY_SET_NAME             TYPE        STRING(optional)
+* | [--->] IV_SOURCE_NAME                 TYPE        STRING(optional)
+* | [--->] IT_KEY_TAB                     TYPE        /IWBEP/T_MGW_NAME_VALUE_PAIR(optional)
+* | [--->] IT_NAVIGATION_PATH             TYPE        /IWBEP/T_MGW_NAVIGATION_PATH(optional)
+* | [--->] IO_TECH_REQUEST_CONTEXT        TYPE REF TO /IWBEP/IF_MGW_REQ_ENTITY(optional)
+* | [<---] ER_ENTITY                      TYPE REF TO DATA
+* | [<---] ES_RESPONSE_CONTEXT            TYPE        /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_ENTITY_CNTXT
+* | [!CX!] /IWBEP/CX_MGW_BUSI_EXCEPTION
+* | [!CX!] /IWBEP/CX_MGW_TECH_EXCEPTION
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_entity.
+
+    DATA ls_matbatchset  TYPE zcl_pl_material_mpc=>ts_matbatch.
+    DATA ls_matwhouseset TYPE zcl_pl_material_mpc=>ts_matwhouse.
+    DATA ls_matsalesset  TYPE zcl_pl_material_mpc=>ts_matsales.
+    DATA lv_entityset_name TYPE string.
+    DATA lr_entity TYPE REF TO data.                        "#EC NEEDED
+
+    lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
+
+    LOOP AT it_key_tab REFERENCE INTO DATA(lo_key_tab).
+      CASE lo_key_tab->name.
+        WHEN 'MaterialId'.
+          DATA(lv_material) = lo_key_tab->value.
+        WHEN 'Batch'.
+          DATA(lv_batch) = lo_key_tab->value.
+      ENDCASE.
+
+    ENDLOOP.
+
+
+    CASE lv_entityset_name.
+*-------------------------------------------------------------------------*
+*             EntitySet -  MatBatchSet
+*-------------------------------------------------------------------------*
+
+      WHEN 'MatBatchSet'.
+*     Call the entity set generated method
+
+        SELECT zplt_mat_batch~*
+          FROM zplt_mat_batch
+          JOIN zplt_material
+           ON zplt_mat_batch~material_id = zplt_material~material_id
+          WHERE zplt_material~active_flag = @abap_true
+           AND  zplt_mat_batch~material_id = @lv_material
+           AND  zplt_mat_batch~batch       = @lv_batch
+          INTO CORRESPONDING FIELDS OF @ls_matbatchset
+          UP TO 1 ROWS.
+        ENDSELECT.
+
+        IF ls_matbatchset IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = ls_matbatchset
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  MatWhouseSet
+*-------------------------------------------------------------------------*
+      WHEN 'MatWhouseSet'.
+*     Call the entity set generated method
+        SELECT zplt_mat_whouse~*
+         FROM zplt_mat_whouse
+         JOIN zplt_warehouse
+          ON zplt_warehouse~warehouse_id = zplt_mat_whouse~warehouse_id
+         WHERE zplt_warehouse~active_flag = @abap_true
+          AND  zplt_mat_whouse~material_id = @lv_material
+          AND  zplt_mat_whouse~batch       = @lv_batch
+         INTO CORRESPONDING FIELDS OF @ls_matwhouseset
+         UP TO 1 ROWS.
+        ENDSELECT.
+
+        IF ls_matwhouseset IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = ls_matwhouseset
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
+*-------------------------------------------------------------------------*
+*             EntitySet -  MatSalesSet
+*-------------------------------------------------------------------------*
+      WHEN 'MatSalesSet'.
+*     Call the entity set generated method
+        SELECT zplt_mat_sales~*
+         FROM zplt_mat_sales
+         WHERE zplt_mat_sales~material_id = @lv_material
+          AND  zplt_mat_sales~batch       = @lv_batch
+         INTO CORRESPONDING FIELDS OF @ls_matsalesset
+         UP TO 1 ROWS.
+        ENDSELECT.
+
+        IF ls_matsalesset IS NOT INITIAL.
+*     Send specific entity data to the caller interface
+          copy_data_to_ref(
+            EXPORTING
+              is_data = ls_matsalesset
+            CHANGING
+              cr_data = er_entity
+          ).
+        ELSE.
+*         In case of initial values - unbind the entity reference
+          er_entity = lr_entity.
+        ENDIF.
+
+      WHEN OTHERS.
+        super->/iwbep/if_mgw_appl_srv_runtime~get_entity(
+           EXPORTING
+             iv_entity_name = iv_entity_name
+             iv_entity_set_name = iv_entity_set_name
+             iv_source_name = iv_source_name
+             it_key_tab = it_key_tab
+             it_navigation_path = it_navigation_path
+          IMPORTING
+            er_entity = er_entity
+    ).
+    ENDCASE.
+
+  ENDMETHOD.
+
+
+* <SIGNATURE>---------------------------------------------------------------------------------------+
+* | Instance Public Method ZCL_PL_MATERIAL_DPC_EXT->/IWBEP/IF_MGW_APPL_SRV_RUNTIME~GET_ENTITYSET
+* +-------------------------------------------------------------------------------------------------+
+* | [--->] IV_ENTITY_NAME                 TYPE        STRING(optional)
+* | [--->] IV_ENTITY_SET_NAME             TYPE        STRING(optional)
+* | [--->] IV_SOURCE_NAME                 TYPE        STRING(optional)
+* | [--->] IT_FILTER_SELECT_OPTIONS       TYPE        /IWBEP/T_MGW_SELECT_OPTION(optional)
+* | [--->] IT_ORDER                       TYPE        /IWBEP/T_MGW_SORTING_ORDER(optional)
+* | [--->] IS_PAGING                      TYPE        /IWBEP/S_MGW_PAGING(optional)
+* | [--->] IT_NAVIGATION_PATH             TYPE        /IWBEP/T_MGW_NAVIGATION_PATH(optional)
+* | [--->] IT_KEY_TAB                     TYPE        /IWBEP/T_MGW_NAME_VALUE_PAIR(optional)
+* | [--->] IV_FILTER_STRING               TYPE        STRING(optional)
+* | [--->] IV_SEARCH_STRING               TYPE        STRING(optional)
+* | [--->] IO_TECH_REQUEST_CONTEXT        TYPE REF TO /IWBEP/IF_MGW_REQ_ENTITYSET(optional)
+* | [<---] ER_ENTITYSET                   TYPE REF TO DATA
+* | [<---] ES_RESPONSE_CONTEXT            TYPE        /IWBEP/IF_MGW_APPL_SRV_RUNTIME=>TY_S_MGW_RESPONSE_CONTEXT
+* | [!CX!] /IWBEP/CX_MGW_BUSI_EXCEPTION
+* | [!CX!] /IWBEP/CX_MGW_TECH_EXCEPTION
+* +--------------------------------------------------------------------------------------</SIGNATURE>
+  METHOD /iwbep/if_mgw_appl_srv_runtime~get_entityset.
+
+
+    DATA lt_matbatchset TYPE zcl_pl_material_mpc=>tt_matbatch.
+    DATA lv_entityset_name TYPE string.
+
+    lv_entityset_name = io_tech_request_context->get_entity_set_name( ).
+
+    CASE lv_entityset_name.
+*-------------------------------------------------------------------------*
+*             EntitySet -  MatBatchSet
+*-------------------------------------------------------------------------*
+      WHEN 'MatBatchSet'.
+
+        SELECT zplt_mat_batch~*
+          FROM zplt_mat_batch
+          JOIN zplt_material
+           ON zplt_mat_batch~material_id = zplt_material~material_id
+          WHERE zplt_material~active_flag = @abap_true
+          INTO CORRESPONDING FIELDS OF TABLE @lt_matbatchset.
+
+*     send specific entity data to the caller interface
+        copy_data_to_ref(
+          EXPORTING
+            is_data = lt_matbatchset
+          CHANGING
+            cr_data = er_entityset
+        ).
+
+      WHEN OTHERS.
+        super->/iwbep/if_mgw_appl_srv_runtime~get_entityset(
+          EXPORTING
+            iv_entity_name = iv_entity_name
+            iv_entity_set_name = iv_entity_set_name
+            iv_source_name = iv_source_name
+            it_filter_select_options = it_filter_select_options
+            it_order = it_order
+            is_paging = is_paging
+            it_navigation_path = it_navigation_path
+            it_key_tab = it_key_tab
+            iv_filter_string = iv_filter_string
+            iv_search_string = iv_search_string
+            io_tech_request_context = io_tech_request_context
+         IMPORTING
+           er_entityset = er_entityset ).
+    ENDCASE.
+
+  ENDMETHOD.
+ENDCLASS.
