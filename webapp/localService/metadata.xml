@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZPL_MATERIAL_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="MatBatch" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MaterialId"/>
+                    <PropertyRef Name="Batch"/>
+                </Key>
+                <Property Name="MaterialId" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Batch" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Batch" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ProducedOn" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="Sales" Relationship="ZPL_MATERIAL_SRV.To_Sales" FromRole="FromRole_To_Sales" ToRole="ToRole_To_Sales"/>
+                <NavigationProperty Name="Whouse" Relationship="ZPL_MATERIAL_SRV.To_Whouse" FromRole="FromRole_To_Whouse" ToRole="ToRole_To_Whouse"/>
+            </EntityType>
+            <EntityType Name="MatWhouse" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MaterialId"/>
+                    <PropertyRef Name="Batch"/>
+                </Key>
+                <Property Name="MaterialId" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Batch" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Batch" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="WarehouseId" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Character Field with Length 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="MovementDate" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="Warehouse status" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="MatSales" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="MaterialId"/>
+                    <PropertyRef Name="Batch"/>
+                </Key>
+                <Property Name="MaterialId" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Batch" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Batch" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="WarehouseId" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Character Field with Length 10" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CustomerName" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Char" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PhoneNumber" Type="Edm.String" Nullable="false" MaxLength="20" sap:unicode="false" sap:label="Char20" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="SoldOn" Type="Edm.DateTime" Nullable="false" Precision="7" sap:unicode="false" sap:label="Date" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="To_Sales" sap:content-version="1">
+                <End Type="ZPL_MATERIAL_SRV.MatBatch" Multiplicity="1" Role="FromRole_To_Sales"/>
+                <End Type="ZPL_MATERIAL_SRV.MatSales" Multiplicity="1" Role="ToRole_To_Sales"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_To_Sales">
+                        <PropertyRef Name="MaterialId"/>
+                        <PropertyRef Name="Batch"/>
+                    </Principal>
+                    <Dependent Role="ToRole_To_Sales">
+                        <PropertyRef Name="MaterialId"/>
+                        <PropertyRef Name="Batch"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="To_Whouse" sap:content-version="1">
+                <End Type="ZPL_MATERIAL_SRV.MatBatch" Multiplicity="1" Role="FromRole_To_Whouse"/>
+                <End Type="ZPL_MATERIAL_SRV.MatWhouse" Multiplicity="1" Role="ToRole_To_Whouse"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_To_Whouse">
+                        <PropertyRef Name="Batch"/>
+                        <PropertyRef Name="MaterialId"/>
+                    </Principal>
+                    <Dependent Role="ToRole_To_Whouse">
+                        <PropertyRef Name="Batch"/>
+                        <PropertyRef Name="MaterialId"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZPL_MATERIAL_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="MatBatchSet" EntityType="ZPL_MATERIAL_SRV.MatBatch" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="MatWhouseSet" EntityType="ZPL_MATERIAL_SRV.MatWhouse" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="MatSalesSet" EntityType="ZPL_MATERIAL_SRV.MatSales" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <AssociationSet Name="To_SalesSet" Association="ZPL_MATERIAL_SRV.To_Sales" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="MatBatchSet" Role="FromRole_To_Sales"/>
+                    <End EntitySet="MatSalesSet" Role="ToRole_To_Sales"/>
+                </AssociationSet>
+                <AssociationSet Name="To_WhouseSet" Association="ZPL_MATERIAL_SRV.To_Whouse" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="MatBatchSet" Role="FromRole_To_Whouse"/>
+                    <End EntitySet="MatWhouseSet" Role="ToRole_To_Whouse"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link rel="self" href="http://10.237.113.177:8000/sap/opu/odata/sap/ZPL_MATERIAL_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="http://10.237.113.177:8000/sap/opu/odata/sap/ZPL_MATERIAL_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
