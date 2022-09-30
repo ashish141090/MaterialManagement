@@ -1,7 +1,62 @@
 <mvc:View controllerName="mm.materialmanagement.controller.material"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m">
-    <Page id="page" title="{i18n>title}">
-        <content />
-    </Page>
+    xmlns="sap.m"
+    xmlns:semantic="sap.f.semantic">
+    <!-- <Page id="page" title="{i18n>title}"> -->
+        <semantic:SemanticPage id="semPage" headerPinnable="false" toggleHeaderOnTitleClick="false">
+        <semantic:titleHeading>
+            <Title id="title" text="{i18n>materials}" />
+        </semantic:titleHeading>
+
+        <semantic:content>
+            <Table id="table" width="auto" noDataText="{i18n>/tableNoDataText}" 
+                   busyIndicatorDelay="1" growing="true" 
+                   growingScrollToLoad="true" updateFinished=".onUpdateFinished"
+                   items="{ path: '/MatBatchSet',
+					        sorter: {
+					        	path: 'MaterialId',
+					        	descending: false
+					        }
+				          }">
+                <headerToolbar>
+                    <Toolbar id="toolbar">
+                        <Title id="tableHeader" text="{i18n>tableTitle}" />
+                        <ToolbarSpacer id="toolbarSapcer" />
+                        <SearchField id="searchField" tooltip="{i18n>searchTooltip}" search=".onSearch" width="auto" />
+                    </Toolbar>
+                </headerToolbar>
+
+                <columns>
+                    <Column id="material">
+                        <Text text="{i18n>materialID}" id="materialText" />
+                    </Column>
+                    <Column id="batch">
+                        <Text text="{i18n>batch}" id="batchText" />
+                    </Column>
+                    <Column id="producedOn">
+                        <Text text="{i18n>producedOn}" id="producedOnText" />
+                    </Column>
+                    <Column id="plantId" hAlign="End">
+                        <Text text="{i18n>plant}" id="plantText" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem id="itemValues" type="Navigation" press=".onPress">
+                        <cells>
+                            <ObjectIdentifier id="materialIdVal" title="{MaterialId}" />
+                            <Text id="batchVal" text="{Batch}" />
+                            <Text id="producedOnVal" text="{ProducedOn}" />
+                            <Text id="plantVal" text="{Plant}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </semantic:content>
+
+        <semantic:sendEmailAction>
+            <semantic:SendEmailAction id="shareEmail" press=".onShareEmailPress" />
+        </semantic:sendEmailAction>
+    </semantic:SemanticPage>
+    <!-- </Page>  -->
 </mvc:View>

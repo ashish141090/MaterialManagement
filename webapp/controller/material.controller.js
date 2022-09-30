@@ -9,6 +9,12 @@ sap.ui.define([
 
         return Controller.extend("mm.materialmanagement.controller.material", {
             onInit: function () {
+                debugger;
+                // var oTable = this.getView().byId("table");
+                // oTable.bindElement("/MatBatchSet", {
+                //     path: 'MaterialId',
+                //     descending: false
+                // });
 
             }
         });
