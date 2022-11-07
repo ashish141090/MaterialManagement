@@ -1,18 +1,12 @@
-<mvc:View controllerName="mm.materialmanagement.controller.material"
-    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
-    xmlns="sap.m"
-    xmlns:semantic="sap.f.semantic">
+<mvc:View controllerName="mm.materialmanagement.controller.material" xmlns:mvc="sap.ui.core.mvc" displayBlock="true" xmlns="sap.m" xmlns:semantic="sap.f.semantic">
     <!-- <Page id="page" title="{i18n>title}"> -->
-        <semantic:SemanticPage id="semPage" headerPinnable="false" toggleHeaderOnTitleClick="false">
+    <semantic:SemanticPage id="semPage" headerPinnable="false" toggleHeaderOnTitleClick="false">
         <semantic:titleHeading>
             <Title id="title" text="{i18n>materials}" />
         </semantic:titleHeading>
 
         <semantic:content>
-            <Table id="table" width="auto" noDataText="{i18n>/tableNoDataText}" 
-                   busyIndicatorDelay="1" growing="true" 
-                   growingScrollToLoad="true" updateFinished=".onUpdateFinished"
-                   items="{ path: '/MatBatchSet',
+            <Table id="table" width="auto" noDataText="{i18n>/tableNoDataText}" busyIndicatorDelay="1" growing="true" updateFinished=".onUpdateFinished" growingThreshold="15" items="{ path: '/MatBatchSet',
 					        sorter: {
 					        	path: 'MaterialId',
 					        	descending: false
@@ -22,6 +16,7 @@
                     <Toolbar id="toolbar">
                         <Title id="tableHeader" text="{i18n>tableTitle}" />
                         <ToolbarSpacer id="toolbarSapcer" />
+                        <Button id="createMaterial" text="{i18n>createMaterial}" press=".createMaterial" />
                         <SearchField id="searchField" tooltip="{i18n>searchTooltip}" search=".onSearch" width="auto" />
                     </Toolbar>
                 </headerToolbar>
