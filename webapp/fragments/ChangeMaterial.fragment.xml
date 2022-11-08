@@ -1,7 +1,7 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form">
     <Dialog id="idDialog" title="Enter Material Details">
         <f:SimpleForm
-            id="createMaterialForm"
+            id="changeMaterialForm"
             editable="true"
             layout="ResponsiveGridLayout"
             title=""
@@ -20,22 +20,21 @@
             singleContainerFullSize="false"
         >
             <Label id='materialID' text="Material ID" />
-            <Input id="materialIDInput" placeholder="Enter Material ID" value="{/MaterialId}" />
+            <Text id="materialIDInput" text="{/MaterialId}" />
 
             <Label id='materialBatch' text="Material batch" />
-            <Input id="materialBatchInput" placeholder="Enter material batch number" value="{/Batch}" />
+            <Text id="materialBatchInput" text="{/Batch}" />
 
             <Label id='materialProducedOn' text="Produced on" />
-            <Input id="materialTypeInput" placeholder="Enter when material was produced" value="{/ProducedOn}" />
+            <DatePicker id="DP1" placeholder="Enter when material was produced" value="{/ProducedOn}" class="sapUiSmallMarginBottom" />
 
             <Label id='materialPlant' text="Plant" />
             <Input id="materialPlantInput" placeholder="Enter where material was produced" value="{/Plant}" />
-
         </f:SimpleForm>
 
         <HBox id='hboxButton' justifyContent="End">
-            <Button id='create' text="{i18n>create}" width="100px" type="Emphasized" press=".onCreate" class="sapUiTinyMarginEnd" />
-            <Button id='cancel' text="{i18n>cancel}" width="100px" type="Emphasized" press=".onCreateCancel" class="sapUiTinyMarginEnd" />
+            <Button id='create' text="{i18n>create}" width="100px" type="Emphasized" press=".onChange" class="sapUiTinyMarginEnd" />
+            <Button id='cancel' text="{i18n>cancel}" width="100px" type="Emphasized" press=".onChangeCancel" class="sapUiTinyMarginEnd" />
         </HBox>
     </Dialog>
 </core:FragmentDefinition>

@@ -6,17 +6,28 @@
         </semantic:titleHeading>
 
         <semantic:content>
-            <Table id="table" width="auto" noDataText="{i18n>/tableNoDataText}" busyIndicatorDelay="1" growing="true" updateFinished=".onUpdateFinished" growingThreshold="15" items="{ path: '/MatBatchSet',
+            <Table
+                id="table"
+                width="auto"
+                mode="SingleSelectLeft"
+                noDataText="{i18n>tableNoDataText}"
+                busyIndicatorDelay="1"
+                growing="true"                
+                updateFinished=".onUpdateFinished"
+                growingThreshold="15"
+                items="{ path: '/MatBatchSet',
 					        sorter: {
 					        	path: 'MaterialId',
 					        	descending: false
 					        }
-				          }">
+				          }"
+            >
                 <headerToolbar>
                     <Toolbar id="toolbar">
                         <Title id="tableHeader" text="{i18n>tableTitle}" />
                         <ToolbarSpacer id="toolbarSapcer" />
                         <Button id="createMaterial" text="{i18n>createMaterial}" press=".createMaterial" />
+                        <Button id="changeMaterial" text="{i18n>changeMaterial}" press=".changeMaterial" />
                         <SearchField id="searchField" tooltip="{i18n>searchTooltip}" search=".onSearch" width="auto" />
                     </Toolbar>
                 </headerToolbar>
