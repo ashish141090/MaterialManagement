@@ -1,11 +1,15 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "sap/ui/model/json/JSONModel"
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast",
+    "sap/m/MessageBox",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, JSONModel) {
+    function (Controller, JSONModel, MessageToast, MessageBox, Filter, FilterOperator) {
         "use strict";
 
         return Controller.extend("mm.materialmanagement.controller.material", {
@@ -26,11 +30,11 @@ sap.ui.define([
                 this.oMaterialJson.Plant = "";
             },
 
-            createMaterial: function () {                
+            createMaterial: function () {
                 this.clearMaterial();
                 this.oMaterial.setData(this.oMaterialJson);
                 var that = this;
-                
+
                 if (!that._CreateDialog) {
                     // Load fragment
                     that._CreateDialog = sap.ui.core.Fragment.load({
@@ -60,6 +64,23 @@ sap.ui.define([
             onCreate: function () {
                 //On press of cancel button close the dialog
                 this.oCreateDialog.close();
+                debugger;
+
+                var oData = {
+                    MaterialId: this.oMaterialJson.MaterialId,
+                    Batch: this.oMaterialJson.Batch,
+                    ProducedOn: new Date( this.oMaterialJson.ProducedOn ),
+                    Plant: this.oMaterialJson.Plant,
+                };
+                var odataModel = this.getView().getModel();
+                odataModel.create("/MatBatchSet", oData, {
+                    success: function (data, response) {
+                        MessageBox.success("Material created successfully");
+                    },
+                    error: function (error) {
+                        MessageBox.error("Error while creating the Material");
+                    }
+                });
             },
 
             onChangeCancel: function () {
@@ -69,15 +90,53 @@ sap.ui.define([
 
             onChange: function () {
                 //On press of cancel button close the dialog
-                this.oChangeDialog.close();                
+                debugger;
+                this.oChangeDialog.close();
+
+                var oData = {
+                    MaterialId: this.oMaterialJson.MaterialId,
+                    Batch: this.oMaterialJson.Batch,
+                    ProducedOn: this.oMaterialJson.ProducedOn,
+                    Plant: this.oMaterialJson.Plant,
+                };
+                
+                var odataModel = this.getView().getModel();
+
+                var path = "/MatBatchSet(" + "MaterialId='" + this.oMaterialJson.MaterialId + 
+                                "',Batch='" + this.oMaterialJson.Batch + "')";
+                
+                odataModel.update(path,oData,{
+                    success: function(data,response){
+                        MessageBox.success("Material Successfully Updated");
+                    },
+                    error: function(error){
+                        MessageBox.error("Error while updating the Material");
+                    }
+                });                
             },
 
-            changeMaterial: function () {     
+            onSearch: function (oEvent) {
+                var aTableSearchState = [];
+                var sQuery = oEvent.getParameter("query");
+
+                if (sQuery && sQuery.length > 0) {
+                    aTableSearchState = [new Filter("MaterialId", FilterOperator.Contains, sQuery)];
+                }
+                this._applySearch(aTableSearchState);
+            },
+
+            _applySearch: function (aTableSearchState) {
+                var oTable = this.byId("table");
+                oTable.getBinding("items").filter(aTableSearchState);
+            },
+
+            changeMaterial: function () {
                 var sSelectedMat = this.getView().byId("table").getSelectedContexts()[0].getProperty();
                 this.oMaterialJson.MaterialId = sSelectedMat.MaterialId;
                 this.oMaterialJson.Batch = sSelectedMat.Batch;
-                this.oMaterialJson.ProducedOn = sSelectedMat.ProducedOn;
+                this.oMaterialJson.ProducedOn = new Date(sSelectedMat.ProducedOn);
                 this.oMaterialJson.Plant = sSelectedMat.Plant;
+                debugger;
                 var that = this;
 
                 this.oMaterial.setData(this.oMaterialJson);

@@ -12,14 +12,18 @@
                 mode="SingleSelectLeft"
                 noDataText="{i18n>tableNoDataText}"
                 busyIndicatorDelay="1"
-                growing="true"                
+                growing="true"
+                sticky="ColumnHeaders,HeaderToolbar"
                 updateFinished=".onUpdateFinished"
                 growingThreshold="15"
                 items="{ path: '/MatBatchSet',
 					        sorter: {
 					        	path: 'MaterialId',
 					        	descending: false
-					        }
+					        },
+                            filters : {                                   
+                              path : 'MaterialId'
+                            }
 				          }"
             >
                 <headerToolbar>
@@ -60,9 +64,9 @@
             </Table>
         </semantic:content>
 
-        <semantic:sendEmailAction>
+        <!-- <semantic:sendEmailAction>
             <semantic:SendEmailAction id="shareEmail" press=".onShareEmailPress" />
-        </semantic:sendEmailAction>
+        </semantic:sendEmailAction> -->
     </semantic:SemanticPage>
     <!-- </Page>  -->
 </mvc:View>

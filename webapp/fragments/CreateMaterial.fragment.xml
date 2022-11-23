@@ -20,13 +20,13 @@
             singleContainerFullSize="false"
         >
             <Label id='materialID' text="Material ID" />
-            <Input id="materialIDInput" placeholder="Enter Material ID" value="{/MaterialId}" />
+            <Input id="materialIDInput" required="true" placeholder="Enter Material ID" value="{/MaterialId}" />
 
             <Label id='materialBatch' text="Material batch" />
-            <Input id="materialBatchInput" placeholder="Enter material batch number" value="{/Batch}" />
+            <Input id="materialBatchInput" required="true" placeholder="Enter material batch number" value="{/Batch}" />
 
             <Label id='materialProducedOn' text="Produced on" />
-            <Input id="materialTypeInput" placeholder="Enter when material was produced" value="{/ProducedOn}" />
+            <DatePicker id="DP1" placeholder="Enter when material was produced" value="{ path: '/ProducedOn', type: 'sap.ui.model.type.DateTime', formatOptions: {UTC:true} }" class="sapUiSmallMarginBottom" />            
 
             <Label id='materialPlant' text="Plant" />
             <Input id="materialPlantInput" placeholder="Enter where material was produced" value="{/Plant}" />
